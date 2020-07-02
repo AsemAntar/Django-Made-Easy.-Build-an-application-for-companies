@@ -45,6 +45,7 @@ class Report(models.Model):
 class ProblemReported(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    report = models.ForeignKey(Report, on_delete=models.CASCADE)
     description = models.TextField()
     problem_id = models.CharField(max_length=12, unique=True, blank=True)
     # how much time does it take to solve the problem
