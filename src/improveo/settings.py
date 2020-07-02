@@ -26,10 +26,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'profiles.apps.ProfilesConfig',
+    # apps created by startapp command
+    'areas.apps.AreasConfig',
+    'categories.apps.CategoriesConfig',
     'reports.apps.ReportsConfig',
     'products.apps.ProductsConfig',
-    'areas.apps.AreasConfig',
+    'profiles.apps.ProfilesConfig',
+
+    # third party apps
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -118,3 +123,7 @@ STATIC_ROOT = os.path.join(os.path.dirname(
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(
     BASE_DIR), "static_cdn", "media_root")
+
+
+# crispy_forms settings
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
