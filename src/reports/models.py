@@ -29,10 +29,15 @@ class Report(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    # define a function for customly formatting date
+    def get_day(self):
+        return self.day.strftime('%d/%m/%Y')
+
     def __str__(self):
         return f"{self.start_hour}-{self.end_hour}-{self.production_line}"
 
     class Meta:
+        ordering = ('-created',)
         verbose_name = 'Report'
         verbose_name_plural = 'Reports'
 
