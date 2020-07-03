@@ -1,6 +1,10 @@
+import random
+import string
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.urls import reverse
 
 from areas.models import ProductionLine
 from categories.models import Category
@@ -9,6 +13,8 @@ from products.models import Product
 
 HOURS = ((str(i), str(i)) for i in range(1, 25))
 HOURS2 = ((str(i), str(i)) for i in range(1, 25))
+
+el = [i for i in string.ascii_uppercase] + [i for i in range(10)]
 
 
 class Report(models.Model):
@@ -33,6 +39,9 @@ class Report(models.Model):
     def get_day(self):
         return self.day.strftime('%d/%m/%Y')
 
+    def get_absolute_url(self):
+        return reverse("reports:update_report", kwargs={"production_line": self.production_line, "pk": self.pk})
+
     def __str__(self):
         return f"{self.start_hour}-{self.end_hour}-{self.production_line}"
 
@@ -42,12 +51,20 @@ class Report(models.Model):
         verbose_name_plural = 'Reports'
 
 
+def random_code():
+    random.shuffle(el)
+    code = [str(x) for x in el[:12]]
+    str_code = ''.join(code)
+    return str_code
+
+
 class ProblemReported(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
     description = models.TextField()
-    problem_id = models.CharField(max_length=12, unique=True, blank=True)
+    problem_id = models.CharField(
+        max_length=12, unique=True, blank=True, default=random_code)
     # how much time does it take to solve the problem
     breakdown = models.PositiveIntegerField()
     public = models.BooleanField(default=False)

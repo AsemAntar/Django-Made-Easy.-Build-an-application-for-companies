@@ -5,7 +5,7 @@
 
 
 {% block content %}
-    <!-- Modal -->
+    <!-- Modal for report a problem form -->
     <div class="modal fade" id="problemModal" tabindex="-1" role="dialog" aria-labelledby="problemModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -24,27 +24,27 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Send</button>
+                        <button type="submit" name="submitbtn1" class="btn btn-primary">Send</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="container bg-white shadow-lg rounded py-2">
+    <div class="container-fluid bg-white shadow-lg rounded py-2">
         <div class="row">
             <div class="col-2">
                 <form action="." method="post">
-                    {% comment %} {% csrf_token %} {% endcomment %}
+                    {% csrf_token %}
                     {{ form|crispy }}
-                    <button type="submit" class="btn btn-primary w-100 shadow-sm mt-3">
+                    <button type="submit" name="submitbtn2" class="btn btn-primary w-100 shadow-sm mt-3">
                         <i class="far fa-paper-plane pr-3"></i>Send 
                     </button>
                 </form>
             </div>
 
             <div class="col-10">
-                <div class="w-100 h-100 bg-light rounded border" style="overflow-y:scroll;">
+                <div class="w-100 bg-light rounded border" style="overflow-y:scroll; height:85vh;">
                     <table class="table">
                         <thead class="thead-light">
                             <tr class="text-center">
@@ -78,7 +78,7 @@
                                     </td>
 
                                     <td class="fit">
-                                        <a href="">
+                                        <a href="{{ report.get_absolute_url }}">
                                             <button type="submit" class="btn btn-info">
                                                 <i class="far fa-edit"></i>
                                             </button>
@@ -86,7 +86,7 @@
                                     </td>
 
                                     <td class="fit">
-                                        <a href="">
+                                        <a href="{% url 'reports:delete_report' pk=report.id %}">
                                             <button type="submit" class="btn btn-danger">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
