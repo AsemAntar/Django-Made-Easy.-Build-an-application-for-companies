@@ -1,10 +1,48 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, FormView
 
-from .forms import ReportForm, ProblemReportedForm
+from .forms import ReportForm, ProblemReportedForm, SelectReportForm, ReportResultForm
 from .models import Report
 from areas.models import ProductionLine
+
+
+@login_required
+def main_report_summary(request):
+    try:
+        day = request.session.get('day' or None)
+        print(day)
+    except:
+        pass
+
+    return render(request, 'reports/summary.html', {})
+
+
+class HomeView(FormView):
+    template_name = 'reports/home.html'
+    form_class = SelectReportForm
+
+    # get the current logged in user
+    def get_form_kwargs(self):
+        kwargs = super(HomeView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def post(self, *args, **kwargs):
+        prod_line = self.request.POST.get('prod_line')
+        return redirect('reports:report_view', production_line=prod_line)
+
+
+class SelectView(FormView):
+    template_name = 'reports/select.html'
+    form_class = ReportResultForm
+    success_url = reverse_lazy('reports:report_summary')
+
+    def form_valid(self, form):
+        self.request.session['day'] = self.request.POST.get('day' or None)
+        print(self.request.session['day'])
+        return super(SelectView, self).form_valid(form)
 
 
 @login_required
