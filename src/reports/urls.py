@@ -12,4 +12,5 @@ urlpatterns = [
     path('reports/delete/<int:pk>/', views.delete_report, name='delete_report'),
     path('reports/<str:production_line>/<int:pk>/update',
          views.UpdateReportView.as_view(), name="update_report"),
+    path('reports/generate/pdf', views.get_generated_problems_in_pdf, name="pdf"),
 ]

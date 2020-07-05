@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <style type="text/css">
+            .tg  {border-collapse:collapse;border-spacing:0;}
+            .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+            overflow:hidden;padding:10px 5px;word-break:normal;}
+            .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+            font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+            .tg .tg-wo29{border-color:#c0c0c0;text-align:left;vertical-align:top}
+        </style>
+    </head>
+    <body>
+        {% for p in problems %}
+            <h3>Problems</h3>
+            <p>{{ p.created }}</p>
+            <table class="tg">
+                <thead>
+                <tr>
+                    <th class="tg-wo29">Category</th>
+                    <th class="tg-wo29">{{ p.category }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="tg-wo29">Description</td>
+                    <td class="tg-wo29">{{ p.description }}</td>
+                </tr>
+                <tr>
+                    <td class="tg-wo29">ID</td>
+                    <td class="tg-wo29">{{ p.problem_id }}</td>
+                </tr>
+                <tr>
+                    <td class="tg-wo29">BreakDown</td>
+                    <td class="tg-wo29">{{ p.breakdown }} min{{ p.breakdown|pluralize }}</td>
+                </tr>
+                </tbody>
+            </table>
+        {% endfor %}
+    </body>
+</html>

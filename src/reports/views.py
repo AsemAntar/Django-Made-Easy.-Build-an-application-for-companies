@@ -1,22 +1,40 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.views.generic import UpdateView, FormView
+from django.template.loader import render_to_string
 
-from .forms import ReportForm, ProblemReportedForm, SelectReportForm, ReportResultForm
+from .forms import ReportForm, ProblemReported, ProblemReportedForm, SelectReportForm, ReportResultForm
 from .models import Report
 from areas.models import ProductionLine
 
+from weasyprint import HTML
+import tempfile
 
-@login_required
-def main_report_summary(request):
-    try:
-        day = request.session.get('day' or None)
-        print(day)
-    except:
-        pass
 
-    return render(request, 'reports/summary.html', {})
+def get_generated_problems_in_pdf(request):
+    problems = ProblemReported.objects.problems_from_today()
+    context = {
+        'problems': problems,
+    }
+
+    # render
+    html_string = render_to_string('reports/problems.html', context)
+    html = HTML(string=html_string)
+    result = html.write_pdf()
+
+    # http response
+    response = HttpResponse(content_type='application/pdf;')
+    response['content-Disposition'] = 'inline; filename=problem_list.pdf'
+    response['Content-Transfer-Encoding'] = 'binary'
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        output.write(result)
+        output.flush()
+        output = open(output.name, 'rb')
+        response.write(output.read())
+
+    return response
 
 
 class HomeView(FormView):
@@ -40,9 +58,36 @@ class SelectView(FormView):
     success_url = reverse_lazy('reports:report_summary')
 
     def form_valid(self, form):
+        # get the selected date from the datepicker
         self.request.session['day'] = self.request.POST.get('day' or None)
-        print(self.request.session['day'])
+        # get the id of the production line selected from the form
+        self.request.session['production_line'] = self.request.POST.get(
+            'production_line' or None)
         return super(SelectView, self).form_valid(form)
+
+
+@login_required
+def main_report_summary(request):
+    try:
+        day = request.session.get('day' or None)
+        prod_id = request.session.get('production_line' or None)
+        production_line = ProductionLine.objects.get(id=prod_id)
+        execution_qs = Report.objects.filter_by_line_and_day(
+            day, prod_id).aggregate_execution()['execution__sum']
+        plan_qs = Report.objects.filter_by_line_and_day(
+            day, prod_id).aggregate_plan()['plan__sum']
+        problems = ProblemReported.objects.get_problem_by_day_and_line(
+            day, production_line)
+    except:
+        pass
+    context = {
+        'execution_qs': execution_qs,
+        'plan_qs': plan_qs,
+        'day': day,
+        'production_line': production_line,
+        'problems': problems,
+    }
+    return render(request, 'reports/summary.html', context)
 
 
 @login_required

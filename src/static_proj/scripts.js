@@ -14,9 +14,10 @@ $(document).ready(function () {
 
     // datepicker
     $(function () {
-        $(".datepicker").datepicker({
-            dateFormat: 'dd-M-yy'
+        $('.datepicker').datepicker({
+            "dateFormat": 'yy-mm-dd'
         }).val();
     });
+
 
 });
