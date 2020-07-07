@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView, FormView
 from django.template.loader import render_to_string
 
@@ -13,6 +14,7 @@ from weasyprint import HTML
 import tempfile
 
 
+@login_required
 def get_generated_problems_in_pdf(request):
     problems = ProblemReported.objects.problems_from_today()
     context = {
@@ -52,7 +54,7 @@ class HomeView(FormView):
         return redirect('reports:report_view', production_line=prod_line)
 
 
-class SelectView(FormView):
+class SelectView(LoginRequiredMixin, FormView):
     template_name = 'reports/select.html'
     form_class = ReportResultForm
     success_url = reverse_lazy('reports:report_summary')
@@ -79,7 +81,7 @@ def main_report_summary(request):
         problems = ProblemReported.objects.get_problem_by_day_and_line(
             day, production_line)
     except:
-        pass
+        return redirect('reports:select_report')
     context = {
         'execution_qs': execution_qs,
         'plan_qs': plan_qs,
@@ -87,6 +89,10 @@ def main_report_summary(request):
         'production_line': production_line,
         'problems': problems,
     }
+
+    del request.session['day']
+    del request.session['production_line']
+
     return render(request, 'reports/summary.html', context)
 
 
@@ -136,7 +142,7 @@ def delete_report(request, *args, **kwargs):
     return redirect(request.META.get('HTTP_REFERER'))
 
 
-class UpdateReportView(UpdateView):
+class UpdateReportView(LoginRequiredMixin, UpdateView):
     model = Report
     form_class = ReportForm
     template_name = 'reports/update.html'

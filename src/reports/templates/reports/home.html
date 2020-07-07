@@ -4,15 +4,15 @@
 {% block title %}Home{% endblock title %}
 
 {% block content %}
-    <div class="col-6 mx-auto m-5 p-5">
-        <div class="text-center text-white h1">
+    <div class="col-6 mx-auto p-5">
+        <div class="text-center text-white h1 mb-5">
             Welcome to Improveo.
         </div>
         {% if request.user.is_authenticated %}
-            <div class="text-center text-white mb-5 h4">
-                Select a Production Line to begin.
-            </div>
-            <form action="" method="post">
+            <form action="" method="post" class="form-group bg-white p-2 rounded">
+                <div class="text-muted mb-2 h5">
+                    Select a Production Line to begin.
+                </div>
                 {% csrf_token %}
                 {{ form|crispy }}
                 <input type="hidden" name="prod_line" id="prod_line">

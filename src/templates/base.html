@@ -13,15 +13,21 @@
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
-        <link rel="stylesheet" href="{% static 'styles.css' %}">
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
-        <title>{% block title %}{% endblock title %}</title>
+        <title>Improveo| {% block title %}{% endblock title %}</title>
     </head>
     
     <body>
-        <section class="bg-dark">
-            {% block content %}{% endblock content %}
+        {% include 'navbar.html' %}
+
+        <section class="bg-dark p-3">
+            <div class="pt-big">
+                {% block content %}{% endblock content %}
+            </div>
         </section>
+
+        {% include 'footer.html' %}
 
 
 
