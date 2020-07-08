@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'reports.apps.ReportsConfig',
     'products.apps.ProductsConfig',
     'profiles.apps.ProfilesConfig',
+    'posts.apps.PostsConfig',
 
     # third party apps
     'crispy_forms',
