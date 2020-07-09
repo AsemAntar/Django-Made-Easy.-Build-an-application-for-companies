@@ -4,9 +4,13 @@ import uuid
 from django.core.validators import FileExtensionValidator
 from django.db import models
 
-
 from profiles.models import Profile
 from reports.models import Report, ProblemReported
+
+
+class PostManager(models.Manager):
+    def get_public(self):
+        return self.filter(problem_reported__public=True)
 
 
 class Post(models.Model):
@@ -28,6 +32,7 @@ class ProblemPost(Post):
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
     problem_reported = models.ForeignKey(
         ProblemReported, on_delete=models.CASCADE)
+    objects = PostManager()
 
     def __str__(self):
         return f"{self.problem_reported.description[:50]}"

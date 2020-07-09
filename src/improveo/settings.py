@@ -1,5 +1,7 @@
 import os
 
+from django.core.servers.basehttp import WSGIServer
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -61,6 +63,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # custome context_processors
+                'profiles.context_processors.profile_pic',
+                'profiles.context_processors.get_profile',
             ],
         },
     },
@@ -128,3 +133,6 @@ MEDIA_ROOT = os.path.join(os.path.dirname(
 
 # crispy_forms settings
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# solve chrome not showing static css
+WSGIServer.request_queue_size = 10
