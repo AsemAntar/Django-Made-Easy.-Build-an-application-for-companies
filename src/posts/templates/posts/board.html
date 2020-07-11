@@ -3,17 +3,67 @@
 {% block title %} Board{% endblock title %}
 
 {% block content %}
-    <div class="col-6 mx-auto">
-        <form action="" method="post" class="form-group bg-white rounded p-2">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <button type="submit" class="btn btn-primary">Send</button>
-        </form>
-    </div>
-    <br>
-    {% for post in object_list %}
-        <div class="col-6 mx-auto card">
-            {{ post.author }}
+    <div class="container bg-light p-3 pb-4 rounded">
+        <div class="col-11 mx-auto border rounded  bg-white rounded p-3">
+            <form action="" method="post" enctype="multipart/form-data" class="form-group" autocomplete="off">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
         </div>
-    {% endfor %}
+        <br>
+        {% for post in object_list %}
+            {% if post.problem_reported %}
+                <div class="col-11 mx-auto card card-body mt-3 border border-danger">
+                    <small class="text-muted">
+                        author: {{ post.problem_reported.user }} | {{ post.problem_reported.created|timesince }} ago.
+                    </small>
+                    <hr>
+                    <h5 class="card-title">{{ post.problem_reported.category }}</h5>
+                    <p class="card-text">{{ post.problem_reported.description }}</p>
+            {% else %}
+                <div class="col-11  mx-auto card card-body mt-3 border border-primary">
+                    {% if post.image %}
+                        <div class="mb-3">
+                            <img src="{{ post.image.url }}" alt="post image" class="w-100">
+                        </div>
+                    {% endif %}
+                    <small class="text-muted">
+                        author: {{ post.author }} | {{ post.created|timesince }} ago.
+                    </small>
+                    <hr>
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text">{{ post.description }}</p>
+            {% endif %}
+                    <div class="row mt-3">
+                        <div class="col-4">
+                            <form action="{% url 'posts:post_like' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="post_id" value="{{ post.id }}">
+                                
+                                {% if profile not in post.liked.all %}
+                                    <button type="submit" class="btn btn-link">
+                                        <i class="far fa-thumbs-up"></i>
+                                        <span class="ml-2">Like</span>
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-link">
+                                        <i class="far fa-thumbs-down"></i>
+                                        <span class="ml-2">Unlike</span>
+                                    </button>
+                                {% endif %}    
+                                <span>{{ post.liked.all.count }} like{{ post.liked.all.count|pluralize }}</span>
+                            </form>
+                        </div>
+                        <div class="col-4">
+                            <a href="" class="btn btn-primary">
+                                <span class="">
+                                    Details <i class="fas fa-search ml-1"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div> <!-- end card -->
+        {% endfor %}
+    </div>
 {% endblock content %}

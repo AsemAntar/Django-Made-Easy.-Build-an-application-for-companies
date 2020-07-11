@@ -7,7 +7,7 @@ class ProblemPostAdmin(admin.ModelAdmin):
     list_display = [
         '__str__', 'author', 'num_likes', 'created'
     ]
-    fields = ('author', 'report', 'problem_reported', )
+    fields = ('author', 'report', 'problem_reported', 'liked', )
     list_display_links = ('__str__', 'author', )
     list_filter = ('created', )
     search_fields = ('author__user__username', )
@@ -20,7 +20,6 @@ class GeneralPostAdmin(admin.ModelAdmin):
     list_display = [
         '__str__', 'author', 'num_likes', 'created'
     ]
-    exclude = ('liked',)
 
     class Meta:
         model = GeneralPost
