@@ -5,7 +5,7 @@
 {% block content %}
     <div class="container bg-light p-3 pb-4 rounded">
         <div class="col-11 mx-auto border rounded  bg-white rounded p-3">
-            <form action="" method="post" enctype="multipart/form-data" class="form-group" autocomplete="off">
+            <form action="" method="post" class="form-group" autocomplete="off" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form|crispy }}
                 <button type="submit" class="btn btn-primary">Send</button>
@@ -23,9 +23,9 @@
                     <p class="card-text">{{ post.problem_reported.description }}</p>
             {% else %}
                 <div class="col-11  mx-auto card card-body mt-3 border border-primary">
-                    {% if post.image %}
+                    {% if post.img %}
                         <div class="mb-3">
-                            <img src="{{ post.image.url }}" alt="post image" class="w-100">
+                            <img src="{{ post.img.url }}" alt="post image" class="w-25 h-25 border border-dark rounded float-right">
                         </div>
                     {% endif %}
                     <small class="text-muted">

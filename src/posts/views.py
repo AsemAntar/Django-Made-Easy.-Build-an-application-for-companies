@@ -6,10 +6,11 @@ from django.views.generic import CreateView
 
 from .forms import PostForm
 from .models import ProblemPost, GeneralPost, Post, Like
+from .mixins import FormUserRequiredMixin
 from profiles.models import Profile
 
 
-class PostCreateView(CreateView):
+class PostCreateView(FormUserRequiredMixin, CreateView):
     form_class = PostForm
     template_name = 'posts/board.html'
     success_url = reverse_lazy('posts:post_list')
