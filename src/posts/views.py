@@ -1,13 +1,26 @@
 from itertools import chain
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 
 from .forms import PostForm
 from .models import ProblemPost, GeneralPost, Post, Like
 from .mixins import FormUserRequiredMixin
 from profiles.models import Profile
+
+
+class ProblemDetailView(LoginRequiredMixin, DetailView):
+    model = ProblemPost
+    template_name = 'posts/detail.html'
+    pk_url_kwarg = 'pk1'
+    context_object_name = 'post'
+
+
+class GeneralDetailPost(LoginRequiredMixin, DetailView):
+    model = GeneralPost
+    template_name = 'posts/detail.html'
 
 
 class PostCreateView(FormUserRequiredMixin, CreateView):

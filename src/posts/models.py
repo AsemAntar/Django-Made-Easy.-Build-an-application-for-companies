@@ -3,6 +3,7 @@ import uuid
 
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from django.urls import reverse
 
 from profiles.models import Profile
 from reports.models import Report, ProblemReported
@@ -43,6 +44,9 @@ class ProblemPost(Post):
     def __str__(self):
         return f"{self.problem_reported.description[:50]}"
 
+    def get_absolute_url(self):
+        return reverse("posts:pp-detail", kwargs={'pk1': self.pk, 'pk': self.problem_reported.id})
+
     class Meta:
         verbose_name = 'Problem Post'
         verbose_name_plural = 'Problem Posts'
@@ -63,6 +67,9 @@ class GeneralPost(Post):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse("posts:gp-detail", kwargs={'pk': self.pk})
+
     class Meta:
         verbose_name = 'General Post'
         verbose_name_plural = 'General Posts'
@@ -78,3 +85,16 @@ class Like(models.Model):
 
     def __str__(self):
         return f"{self.post} was {self.value}d"
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    post = models.ForeignKey(GeneralPost, on_delete=models.CASCADE)
+    body = models.TextField(max_length=360)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.pk}'
+
+    class Meta:
+        ordering = ('-created',)

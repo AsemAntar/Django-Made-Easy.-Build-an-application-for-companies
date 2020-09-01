@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ProblemPost, GeneralPost
+from .models import ProblemPost, GeneralPost, Comment
 
 
 class ProblemPostAdmin(admin.ModelAdmin):
@@ -27,3 +27,4 @@ class GeneralPostAdmin(admin.ModelAdmin):
 
 admin.site.register(GeneralPost, GeneralPostAdmin)
 admin.site.register(ProblemPost, ProblemPostAdmin)
+admin.site.register(Comment)
